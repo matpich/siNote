@@ -8,15 +8,11 @@ interface NoteCreator extends SingleNote {
 }
 
 export class Note implements NoteCreator {
-    constructor (public category: string, public title: string, public tasks: [string, boolean] [] = []) {
+    constructor (public category: string, public title: string, public tasks?: [string, boolean] []) {}
 
-    }
-
-    newNote() {
-        const newNote: SingleNote = {category: "main", title: Date.now().toString(), tasks: [['eggs', false], ['sausage', true]]};
-        
-        localStorage.setItem("notes", JSON.stringify([newNote]));
-        display.displayCategory("main");
+    newNote() {   
+        display.displaySingleNote({category: this.category, title: this.title, tasks: this.tasks})
+        display.saveToCookies();
     }
 
     deleteNote() {
