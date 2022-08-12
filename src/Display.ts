@@ -1,5 +1,6 @@
 import { TasksList, SingleNote } from "./main"
 import { Note } from "./SingleNote";
+import { SaveAndLoad } from "./SaveAndLoad";
 
 //Singleton Class
 export class Display {
@@ -57,7 +58,7 @@ export class Display {
     noteTitle.className = "text-lg justify-self-start font-bold mb-2 w-4/5";
     noteTitle.setAttribute("contentEditable", "true");
     noteTitle.innerHTML = `${title}`;
-    noteTitle.addEventListener("focusout", this.saveToCookies);
+    noteTitle.addEventListener("focusout", SaveAndLoad.saveToCookies);
     noteTitle.addEventListener("keypress", (key) => {
       if (key.key === 'Enter') {
         noteTitle.blur(); //blur removes keyboard focus from the element
@@ -70,8 +71,8 @@ export class Display {
 
   private createNoteTasks (tasks: TasksList): HTMLDivElement {
     //creates notes tasks container
-    const noteTasks = document.createElement('div');
-    noteTasks.className = `flex flex-col space-y-2`;
+    const noteTasksContainer = document.createElement('div');
+    noteTasksContainer.className = `flex flex-col space-y-2`;
     if (tasks) {
       tasks.forEach((task) => {
         const singleTask = `
@@ -79,21 +80,80 @@ export class Display {
             <input type="checkbox" ${task[1] ? "checked" : ""}>
             <label>${task[0]}</label>
           </div>`;
-          noteTasks.innerHTML += singleTask;
+          noteTasksContainer.innerHTML += singleTask;
       })
     }
 
-    return noteTasks;
+    return noteTasksContainer;
   }
 
   private createNewNoteButton (): HTMLAnchorElement {
     //creates add new task button
     const newNoteButton = document.createElement('a');
-    newNoteButton.className = `justify-self-center self-center flex justify-center items-end w-8 h-8 text-3xl rounded-full mt-4 text-white font-semibold bg-green-500 right-2`;
+    newNoteButton.className = `justify-self-center self-center flex justify-center items-end text-2xl text-green-500 font-semibold right-2`;
     newNoteButton.href = "#"
-    newNoteButton.innerHTML = "+";
+    newNoteButton.innerHTML = `<i class="fa-solid fa-list-check"></i>`;
+    newNoteButton.addEventListener("click", this.addNewTask.bind(this));
 
     return newNoteButton;
+  }
+
+  private addNewTaskLabel (element: HTMLAnchorElement, notesContainer: HTMLDivElement): HTMLDivElement {
+    const taskLabel = document.createElement("div")
+    taskLabel.setAttribute("contenteditable", "true");
+    taskLabel.className = "w-5/6"
+
+    taskLabel.addEventListener("keydown", (key) => {
+      if (key.key === 'Enter') {
+        key.preventDefault();
+        taskLabel.blur();
+        if (!taskLabel.innerHTML) {
+          const emptyTask =  notesContainer.lastChild;
+          if(!!emptyTask) {
+            notesContainer.removeChild(emptyTask);
+          }
+          return;
+        }
+        element.click();
+      }
+    })
+
+    return taskLabel;
+  }
+
+  private addNewTaskInput (taskName: string): HTMLInputElement {
+    const taskInput = document.createElement("input");
+    taskInput.setAttribute("type", "checkbox");
+    taskInput.setAttribute("name", taskName)
+    taskInput.className = "mt-1"
+
+    return taskInput;
+  }
+
+  private addSingleNewTaskContainer (element: HTMLAnchorElement, notesContainer: HTMLDivElement): [HTMLDivElement, HTMLDivElement]  {
+    const task = document.createElement("div");
+    task.className = "flex space-x-3"
+
+    const taskName = Date.now().toString();
+
+    const taskLabel = this.addNewTaskLabel(element, notesContainer);
+
+    task.append(this.addNewTaskInput(taskName), taskLabel);
+
+    return [task, taskLabel];
+  }
+
+  private addNewTask (element?: any): void {
+    console.log("addNewTask");
+    //const noteTasksContainer: HTMLDivElement = element.target.previousSibling;
+    const noteTasksContainer: HTMLDivElement = element.path[2].childNodes[2]; //needs to be changed, it's too boilerplated
+    console.log(element.path[2].childNodes[2]);
+
+    const [taskContainer, taskLabel] = this.addSingleNewTaskContainer(element.target, noteTasksContainer);
+    noteTasksContainer.appendChild(taskContainer);
+    taskLabel.focus();
+
+    SaveAndLoad.saveToCookies();
   }
 
 
@@ -101,17 +161,12 @@ export class Display {
     //gets section container of specific category
     const sectionNotesContainer = document.getElementById(`notes-container-${content.category}`);
 
-
-
-
-
-    //appends note component to category section
     if (sectionNotesContainer) sectionNotesContainer.appendChild(this.createNoteMainContainer(content.title, content.tasks || []));
   }
 
   removeSingleNote(note: any):void {
     note.path[2].remove();
-    this.saveToCookies();
+    SaveAndLoad.saveToCookies();
   }
 
   displayCategory(category: string) {
@@ -127,19 +182,5 @@ export class Display {
     }
   }
   
-  saveToCookies(): void {
-    const categoryNotes: SingleNote [] = [];
-    const notes = document.querySelectorAll('*[data-note="note"]') ;
 
-    notes.forEach((note)   => {
-      categoryNotes.push(
-            {
-                category: "main",
-                title: note.firstChild?.childNodes[1].textContent || "Title Loading Error",
-                tasks: JSON.parse((note as HTMLDivElement).dataset.tasks || "[]") || []
-            }
-        )
-    })
-    console.log(categoryNotes);    document.cookie = `notes=${JSON.stringify(categoryNotes)}`;
-  }
 }

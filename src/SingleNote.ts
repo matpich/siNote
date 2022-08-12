@@ -1,4 +1,5 @@
 import { SingleNote, display } from "./main";
+import { SaveAndLoad } from "./SaveAndLoad"
 
 interface NoteCreator extends SingleNote {
     newNote: () => void;
@@ -8,11 +9,11 @@ interface NoteCreator extends SingleNote {
 }
 
 export class Note implements NoteCreator {
-    constructor (public category: string, public title: string, public tasks?: [string, boolean] []) {}
+    constructor (public category: string, public title: string, public tasks: ["text" | "task", string, boolean?] []) {}
 
     newNote() {   
         display.displaySingleNote({category: this.category, title: this.title, tasks: this.tasks})
-        display.saveToCookies();
+        SaveAndLoad.saveToCookies();
     }
 
     deleteNote() {
