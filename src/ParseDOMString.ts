@@ -9,12 +9,22 @@ export class ParseDOMString {
         notes.forEach((note)   => {
             const noteToSave: SingleNote = {
                 category: "main",
-                title: (note as HTMLDivElement).dataset.title as string,
-                tasks: []
+                title: "",
+                tasks: [],
+                id: 0
             }
-            note.childNodes[1].childNodes.forEach(el => {
+            ParseDOMString.contentToArray(note.childNodes[1].childNodes, noteToSave);
+            categoryNotes.push(noteToSave);
+        })
+        console.log(categoryNotes);
+        return JSON.stringify(categoryNotes);
+    }
+
+    private static contentToArray (nodes: NodeListOf <ChildNode>, noteToSave: SingleNote) {
+        try {
+            nodes.forEach(el => {
                 //ignores text nodes
-                if (el.nodeType === 1 && (el as HTMLElement).hasAttribute("data-type")) {
+                if (el.nodeType === 1 && (el as HTMLElement).dataset.type === "content") {
                     el.childNodes.forEach(item => {
                         if(item.nodeType === 1) {
                             if ((item as HTMLDivElement).dataset.type === "task") {
@@ -24,13 +34,18 @@ export class ParseDOMString {
                             } else if ((item as HTMLDivElement).dataset.type === "text") {
                                 let divElement: HTMLDivElement = item as HTMLDivElement;
                                 noteToSave.tasks.push(["text", divElement.innerText]);
+                            } else if((item as HTMLDivElement).dataset.type === "heading") {
+                                let headingElement: HTMLDivElement = item as HTMLDivElement;
+                                noteToSave.tasks.push(["heading", headingElement.innerText]);
                             }
                         }
                     })
+                } else if (el.nodeType === 1 && (el as HTMLElement).dataset.type === "title") {
+                    noteToSave.title = (el as HTMLDivElement).innerText;
                 }
             });
-            categoryNotes.push(noteToSave);
-        })
-        return JSON.stringify(categoryNotes);
+        } catch {
+            console.log("asd");
+        }
     }
 }

@@ -23,6 +23,11 @@
     </div>
   </nav>
 
+  <!--
+    This div only purpose is to add css classes into the main document.
+    <div class="bg-slate-300"></div>
+  -->
+
   <!-- <section id="categories-container" class="hidden fixed z-10 bg-gray-800 text-white w-[250px] h-full pt-3 px-7 mt-9 md:flex md:flex-col">
     <div>
       <h3 class="text-xl border-b-2 border-white pb-3 font-bold mb-4">Categories</h3>
@@ -33,14 +38,14 @@
     </div>
   </section> -->
 
-  <section id="notes-container-main" class="flex flex-col items-center p-7 md:flex-row md:flex-wrap">
+  <section id="notes-container" class="flex flex-col items-center p-7 md:flex-row md:flex-wrap">
 
 
 
-    <div class="container flex-2 mx-2 my-2 md:max-w-md md:min-w-[250px]" data-note="note" data-title="Notes">
+    <div class="container flex-2 mx-2 my-2 md:max-w-md md:min-w-[250px]" data-note="note">
       <div class="pt-2 px-3 pb-2 flex flex-col rounded-md w-full bg-white relative">
         <a  href="#" class="invisible absolute flex justify-center items-center w-6 h-6 rounded-xl text-white text-xs font-semibold bg-gray-800 right-2 hover:bg-gray-600">X</a>
-        <div class="text-lg justify-self-start font-bold mb-2 w-4/5" contenteditable="true">Test Note</div>
+        <div class="text-2xl justify-self-start font-bold mb-2 w-4/5" contenteditable="true" data-type="title">Test Note</div>
 
         <div class="flex flex-col space-y-2" data-type="content">
 
@@ -52,7 +57,10 @@
           <div class="flex space-x-3" data-type="task">
             <input type="checkbox" class="mt-1">
             <label class="w-5/6" contenteditable="true">dolor</label>
+            <a  href="#" class="flex justify-center items-center w-5 h-5 rounded-md text-white text-xs font-semibold bg-red-600 hover:bg-red-400">X</a>
           </div>
+
+          <div contenteditable="true" class="font-bold text-lg" data-type="heading">Wiele rzeczy innych</div>
 
           <div contenteditable="true" data-type="text">Wysoki Marszałku Szanowna Izbo</div>
 
@@ -72,10 +80,10 @@
     </div>
 
 
-    <div class="container flex-2 mx-2 my-2 md:max-w-md md:min-w-[250px]" data-note="note" data-title="AKFDNF">
+    <div class="container flex-2 mx-2 my-2 md:max-w-md md:min-w-[250px]" data-note="note">
       <div class="pt-2 px-3 pb-2 flex flex-col rounded-md w-full bg-white relative">
         <a  href="#" class="invisible absolute flex justify-center items-center w-6 h-6 rounded-xl text-white text-xs font-semibold bg-gray-800 right-2 hover:bg-gray-600">X</a>
-        <div class="text-lg justify-self-start font-bold mb-2 w-4/5" contenteditable="true">fdsfxfasdf</div>
+        <div class="text-lg justify-self-start font-bold mb-2 w-4/5" contenteditable="true" data-type="title">fdsfxfasdf</div>
 
         <div class="flex flex-col space-y-2" data-type="content">
 
