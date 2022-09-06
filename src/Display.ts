@@ -121,7 +121,7 @@ export class Display {
 
   addTaskDeleteButton (): HTMLAnchorElement {
     const taskDeleteButton = document.createElement('a');
-    taskDeleteButton.className = `invisible flex justify-center items-center w-5 h-5 rounded-md text-white text-xs font-semibold bg-red-600 hover:bg-red-400`;
+    taskDeleteButton.className = `invisible flex justify-center justify-self-end items-center w-5 h-5 rounded-md text-white text-xs font-semibold bg-red-600 hover:bg-red-400`;
     taskDeleteButton.href = "javascript:void(0)";
     taskDeleteButton.innerText = "X";
 
@@ -130,15 +130,19 @@ export class Display {
 
   addNewTaskContainer (): HTMLDivElement {
     const task = document.createElement("div");
-    task.className = "flex space-x-3"
+    task.className = "flex justify-between"
     task.setAttribute("data-type", "task")
     return task;
   }
 
-  addNewTaskTextField (): HTMLDivElement {
+  addNewTaskTextField (type: string = "paragraph"): HTMLDivElement {
     const taskLabel = document.createElement("div")
     taskLabel.setAttribute("contenteditable", "true");
-    taskLabel.className = "w-5/6 cursor-auto"
+    if (type === "paragraph") {
+      taskLabel.className = "w-5/6 cursor-auto"
+    } else if (type === "heading") {
+      taskLabel.className = "w-5/6 font-bold cursor-auto"
+    }
 
     return taskLabel;
   }
@@ -159,10 +163,6 @@ export class Display {
     if (sectionNotesContainer) sectionNotesContainer.appendChild(this.createNoteMainContainer(note));
   }
 
-  removeSingleNote(note: any):void {
-    note.path[2].remove();
-    SaveAndLoad.saveToCookies();
-  }
 
   // displayCategory(category: string) {
   //   const cDecoded = decodeURIComponent(document.cookie); //to be careful
